@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "simplelinechart",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/augarte/SimpleLineChart.git",
+      "state" : {
+        "revision" : "a25feafb2c0611aff3e9466bf6e5633b95b04eec",
+        "version" : "0.0.2"
+      }
+    }
+  ],
+  "version" : 2
+}
