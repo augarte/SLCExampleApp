@@ -8,7 +8,7 @@
 import UIKit
 import SimpleLineChart
 
-class StyledSLCViewController: UIViewController {
+final class StyledSLCViewController: UIViewController {
     
     let lineChart = SimpleLineChart()
     let lineStyle = SLCLineStyle(lineColor: .black,
@@ -19,54 +19,16 @@ class StyledSLCViewController: UIViewController {
                                  lineShadowgradientEnd: .lightGray)
     let chartStyle = SLCChartStyle(backgroundGradient: false,
                                    solidBackgroundColor: .lightGray)
+    
+    static func create() -> StyledSLCViewController {
+        super.init(nibName: nil, bundle: nil) as! StyledSLCViewController
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupChart()
         loadChart()
     }
-    
-    private func setupChart() {
-        lineChart.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(lineChart)
-        NSLayoutConstraint.activate([
-            lineChart.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            lineChart.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            lineChart.heightAnchor.constraint(equalToConstant: 300),
-            lineChart.widthAnchor.constraint(equalToConstant: view.frame.width - 32)
-        ])
-    }
-    
-    private func loadChart() {
-        let values: [SLCData] = fetchData()
-        let dataSet = SLCDataSet(graphPoints: values)
-        dataSet.setLineStyle(lineStyle)
-        lineChart.setChartStyle(chartStyle: chartStyle)
-        lineChart.loadPoints(dataSet: dataSet)
-    }
-}
-
-private extension StyledSLCViewController {
-    func fetchData() -> [SLCData] {
-        var values: [SLCData] = []
-        var y = 0.0
-        let n = 100
-        for i in 0..<n {
-            y += (Double.random(in: 0..<1) * 10.0 - 5.0);
-            let data = SLCData(x: i - n / 2, y: y)
-            values.append(data)
-        }
-        return values
-    }
-}
-
-extension StyledSLCViewController {
-    
-    static func create() -> StyledSLCViewController {
-        return super.init(nibName: nil, bundle: nil) as! StyledSLCViewController
-    }
-}
-
-extension StyledSLCViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -77,12 +39,22 @@ extension StyledSLCViewController {
         setupTitle()
         setupButtons()
     }
+}
+
+private extension StyledSLCViewController {
     
-    @objc func backTapped(sender: UIBarButtonItem) {
-        navigationController?.popViewController(animated: false)
+    func setupChart() {
+        lineChart.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(lineChart)
+        NSLayoutConstraint.activate([
+            lineChart.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            lineChart.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            lineChart.heightAnchor.constraint(equalToConstant: 300),
+            lineChart.widthAnchor.constraint(equalToConstant: view.frame.width - 32)
+        ])
     }
     
-    private func setupTitle() {
+    func setupTitle() {
         let title = UILabel()
         title.translatesAutoresizingMaskIntoConstraints = false
         title.textColor = .black
@@ -95,8 +67,7 @@ extension StyledSLCViewController {
         ])
     }
     
-    private func setupButtons() {
-        // Reload Button
+    func setupButtons() {
         let reloadBtn = UIButton()
         reloadBtn.translatesAutoresizingMaskIntoConstraints = false
         reloadBtn.setTitle("Reload", for: .normal)
@@ -112,7 +83,34 @@ extension StyledSLCViewController {
         reloadBtn.addTarget(self, action: #selector(reload), for: .touchUpInside)
     }
     
+    @objc func backTapped(sender: UIBarButtonItem) {
+        navigationController?.popViewController(animated: false)
+    }
+    
     @objc private func reload(sender: UIButton?) {
         loadChart()
+    }
+}
+
+private extension StyledSLCViewController {
+    
+    func loadChart() {
+        let values: [SLCData] = fetchData()
+        let dataSet = SLCDataSet(graphPoints: values)
+        dataSet.setLineStyle(lineStyle)
+        lineChart.setChartStyle(chartStyle: chartStyle)
+        lineChart.loadPoints(dataSet: dataSet)
+    }
+    
+    func fetchData() -> [SLCData] {
+        var values: [SLCData] = []
+        var y = 0.0
+        let n = 100
+        for i in 0..<n {
+            y += (Double.random(in: 0..<1) * 10.0 - 5.0);
+            let data = SLCData(x: i - n / 2, y: y)
+            values.append(data)
+        }
+        return values
     }
 }
